@@ -8,38 +8,40 @@ ITracer zipkinTracer = new ZipkinTracer(...);
 ITraceContext traceContext = new TraceContext();
 ITracer tracer = new AdvancedTracer(zipkinTracer, traceContext);
 
-using (tracer.BuildSpan("1") // Add a reference "child of" to the span "1" from the active span.
-    .Start()) // Make the span "1" as the new active span.
+using (tracer
+    .BuildSpan("1") // Add a reference "child of" to the span "1" from the current active span.
+    .Start()) // Make the span "1" active automatically.
 {
     ...
     
-    tracer.ActiveSpan.SetTag("key1", "value1");
+    tracer.ActiveSpan.SetTag("key", "value");
     
     ...
     
-    using (tracer.BuildSpan("1.1") // Add a reference "child of" to the span "1.1" from the active span "1" automatically.
-        .Start()) // Make the span "1.1" as the new active span automatically.
+    using (tracer
+        .BuildSpan("1.1") // Add a reference "child of" from span "1.1" to the active span "1" automatically.
+        .Start()) // Make the span "1.1" active automatically.
     {
         ...
         tracer.ActiveSpan.SetTag("key2", "value2");
         ...
-    } // The span "1.1" is not anymore the active span. Span "1" is the active span again.
+    } // The span "1.1" is not anymore active. Span "1" is active again.
     
     ...
     
-    using (ISpan span12 = tracer.BuildSpanIgnoreActive("1.2") // We do not add reference "child of" to a new span "1.2" from the span "1".
-        .FollowsFrom(tracer.ActiveSpan) // Add a reference "follows from" to the span "1.2" from the active span "1" manually.
-        .StartNonActive()) // The span "1.2" is not made the active span. The span "1" remains the active span.
+    using (ISpan span12 = tracer
+        .BuildSpanIgnoreActive("1.2") // Do not add reference "child of" from span "1.2" to the active span "1" automatically.
+        .FollowsFrom(tracer.ActiveSpan) // Add a reference "follows from" from span "1.2" to the active span "1" manually.
+        .StartNonActive()) // Do not make span "1.2" active automatically. The span "1" remains active.
     {
         ...
-        span12.MakeActive(); // Make the span "1.2" the active span manually.
+        span12.MakeActive(); // Make the span "1.2" active manually.
         tracer.ActiveSpan.SetTag("key2", "value2");
         ...
-    } // The span "1.2" is not anymore the active span. Span "1" is the active span again.
+    } // The span "1.2" is not anymore active. Span "1" is active again.
     
     ...
     
-} // The span "1" is not anymore the active span. The active span will have its previous value.
-
+} // The span "1" is not anymore active. The active span has its previous value.
 
 ```
