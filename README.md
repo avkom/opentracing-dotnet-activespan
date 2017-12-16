@@ -1,12 +1,20 @@
 # opentracing-dotnet-context
 Trace context extensions for opentracing-csharp.
 
+Advantages:
+1. `ISpan IAdvancedTracer.ActiveSpan { get; }` provides a reference to a current active span.
+2. `ITracer.BuildSpan(string operationName)` adds reference "child of" from a new created span to a current active span automatically.
+3. If you do not want this reference, use `IAdvancedTracer.BuildIgnoreActive(string operationName)` method instead.
+4. `ISpan ISpanBuilder.Start()` starts a new span and makes it active automatically.
+5. If you do not want to make it active, use `ISpan TraceExtensions.StartNonActive(this ISpanBuilder spanBuilder)` extension method instead.
+6. You can make this span active later by using `void TraceExtensions.MakeActive(this ISpan span)` extension method.
+
 Usage:
 
 ```csharp
 ITracer zipkinTracer = new ZipkinTracer(...);
 ITraceContext traceContext = new TraceContext();
-ITracer tracer = new AdvancedTracer(zipkinTracer, traceContext);
+IAdvancedTracer tracer = new AdvancedTracer(zipkinTracer, traceContext);
 
 using (tracer
     .BuildSpan("1") // Add a reference "child of" to the span "1" from the current active span.
