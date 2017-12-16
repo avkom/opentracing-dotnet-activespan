@@ -1,13 +1,18 @@
 # opentracing-dotnet-context
 Trace context extensions for opentracing-csharp.
 
-Advantages:
+This library provides wrappers and extension methods around OpenTracing interfaces which can be used for propagating the current tracing `Span` throughout the application without changing the application's code.
+
+ However, if the application is starting new threads or is using thread pools, the thread-local context is not going to be carried over into the execution in the next thread. To maintain context propagation, a wrapper `TraceTaskScheduler` and `TraceTaskFactory` are provided that automatically transfers the context onto the new threads.
+
+Features:
 1. `ISpan IAdvancedTracer.ActiveSpan { get; }` provides a reference to a current active span.
 2. `ITracer.BuildSpan(string operationName)` adds reference "child of" from a new created span to a current active span automatically.
-3. If you do not want this reference, use `IAdvancedTracer.BuildIgnoreActive(string operationName)` method instead.
-4. `ISpan ISpanBuilder.Start()` starts a new span and makes it active automatically.
-5. If you do not want to make it active, use `ISpan TraceExtensions.StartNonActive(this ISpanBuilder spanBuilder)` extension method instead.
-6. You can make this span active later by using `void TraceExtensions.MakeActive(this ISpan span)` extension method.
+If you do not want this reference, use `IAdvancedTracer.BuildIgnoreActive(string operationName)` method instead.
+3. `ISpan ISpanBuilder.Start()` starts a new span and makes it active automatically.
+If you do not want to make it active, use `ISpan TraceExtensions.StartNonActive(this ISpanBuilder spanBuilder)` extension method instead.
+4. You can make this span active later by using `void TraceExtensions.MakeActive(this ISpan span)` extension method.
+5. `void ISpan.Dispose()`/`void ISpan.Finish()`/`void ISpan.Finish(DateTimeOffset finishTimestamp)` restores previous value of active span automatically.
 
 Usage:
 
