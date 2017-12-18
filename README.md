@@ -58,4 +58,5 @@ using (tracer
     
 } // The span "1" is not anymore active. The active span has its previous value.
 
+
 ```
