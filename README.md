@@ -4,7 +4,7 @@ Trace context extensions for opentracing-csharp.
 
 This library provides wrappers and extension methods around OpenTracing interfaces which can be used for propagating the current tracing `Span` throughout the application without changing the application's code.
 
- However, if the application is starting new threads or is using thread pools, the thread-local context is not going to be carried over into the execution in the next thread. To maintain context propagation, a wrapper `TraceTaskScheduler` and `TraceTaskFactory` are provided that automatically transfers the context onto the new threads.
+However, if the application is starting new threads or is using thread pools, the thread-local context is not going to be carried over into the execution in the next thread. To maintain context propagation, a wrapper `TraceTaskScheduler` and `TraceTaskFactory` are provided that automatically transfers the context onto the new threads.
 
 Features:
 1. `ISpan IAdvancedTracer.ActiveSpan { get; }` provides a reference to a current active span.
