@@ -1,4 +1,4 @@
-# opentracing-dotnet-context
+# opentracing-dotnet-activespan
 Trace context extensions for opentracing-csharp.
 
 This library provides wrappers and extension methods around OpenTracing interfaces which can be used for propagating the current tracing `Span` throughout the application without changing the application's code.
